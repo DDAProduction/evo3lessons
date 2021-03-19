@@ -3,6 +3,7 @@
 namespace EvolutionCMS\Main\Controllers;
 
 use Illuminate\Support\Facades\Cache;
+use EvolutionCMS\Models\SiteContent;
 
 class BaseController
 {
@@ -39,7 +40,15 @@ class BaseController
 
     public function globalElements()
     {
+        $this->data['menu'] = SiteContent::GetRootTree(2)
+            ->where('site_content.hidemenu', 0)
+            ->get()
+            ->toTree()
+            ->toArray();
 
+        $this->data['parentIds'] = SiteContent::ancestorsWithSelfOf($this->evo->documentIdentifier)
+            ->pluck('id')
+            ->toArray();
     }
 
     public function sendToView()

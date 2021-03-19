@@ -26,25 +26,36 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Blog</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Gallery
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#">Album 1</a></li>
-                            <li><a class="dropdown-item" href="#">Album 2</a></li>
-                            <li><a class="dropdown-item" href="#">Album 3</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Contacts</a>
-                    </li>
+                    @foreach($menu as $item)
+                        @if(!isset($item['children']))
+                            <li class="nav-item">
+                                <a class="nav-link
+                                    @if(in_array($item['id'], $parentIds)) active @endif"
+                                    href="@makeUrl($item['id'])">
+                                    {{ $item['pagetitle'] }}
+                                </a>
+                            </li>
+                        @else
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle
+                                   @if(in_array($item['id'], $parentIds)) active @endif"
+                                   href="@makeUrl($item['id'])" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    {{ $item['pagetitle'] }}
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    @foreach($item['children'] as $child)
+                                    <li>
+                                        <a class="dropdown-item
+                                           @if(in_array($child['id'], $parentIds)) active @endif"
+                                           href="@makeUrl($child['id'])">
+                                            {{ $child['pagetitle'] }}
+                                        </a>
+                                    </li>
+                                    @endforeach
+                                </ul>
+                            </li>
+                        @endif
+                    @endforeach
                 </ul>
                 <!--form class="d-flex">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
